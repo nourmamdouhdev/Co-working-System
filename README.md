@@ -29,39 +29,26 @@ Native PHP + MySQL app for staff-operated co-working check-in/check-out billing.
 - `app/Views` templates
 - `config/` app and DB config
 - `database/migrations` SQL schema
-- `scripts/` CLI scripts
 
 ## Setup
 
-1. Copy environment file:
-
-```bash
-cp .env.example .env
-```
-
-2. Update DB credentials in `.env`.
-
-3. Create MySQL database (example):
+1. Create MySQL database (example):
 
 ```sql
 CREATE DATABASE coworking_system CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 ```
 
-4. Run migration:
+2. Import SQL schema:
 
 ```bash
-php scripts/migrate.php
+mysql -u root coworking_system < database/migrations/001_init.sql
 ```
 
-5. Start local server:
+3. Put project in `xampp/htdocs/Co-working-System`.
+4. Start Apache + MySQL from XAMPP Control Panel.
+5. Open in browser:
 
-```bash
-php -S 0.0.0.0:8000 -t public public/router.php
-```
-
-6. Open in browser:
-
-`http://localhost:8000`
+`http://localhost/Co-working-System/`
 
 ## Default Admin
 

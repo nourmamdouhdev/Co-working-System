@@ -20,6 +20,25 @@ function config(string $key, mixed $default = null): mixed
 function app_url(string $path = ''): string
 {
     $baseUrl = rtrim((string) config('app.url', ''), '/');
+    if ($baseUrl === '') {
+        $isHttps = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== '' && $_SERVER['HTTPS'] !== 'off';
+        $scheme = $isHttps ? 'https' : 'http';
+        $host = (string) ($_SERVER['HTTP_HOST'] ?? 'localhost');
+
+        $scriptName = (string) ($_SERVER['SCRIPT_NAME'] ?? '');
+        $basePath = str_replace('\\', '/', dirname($scriptName));
+        if ($basePath === '.' || $basePath === '/') {
+            $basePath = '';
+        }
+
+        $basePath = rtrim($basePath, '/');
+        if ($basePath !== '' && str_ends_with($basePath, '/public')) {
+            $basePath = substr($basePath, 0, -7);
+        }
+
+        $baseUrl = $scheme . '://' . $host . $basePath;
+    }
+
     $path = '/' . ltrim($path, '/');
 
     return $baseUrl . ($path === '/' ? '' : $path);
@@ -107,7 +126,40 @@ function request_uri_path(): string
 {
     $uri = $_SERVER['REQUEST_URI'] ?? '/';
     $path = parse_url($uri, PHP_URL_PATH);
-    return is_string($path) ? $path : '/';
+    if (!is_string($path) || $path === '') {
+        return '/';
+    }
+
+    $scriptName = (string) ($_SERVER['SCRIPT_NAME'] ?? '');
+    $basePath = str_replace('\\', '/', dirname($scriptName));
+    if ($basePath === '.' || $basePath === '/') {
+        $basePath = '';
+    }
+    $basePath = rtrim($basePath, '/');
+    if ($basePath !== '' && str_ends_with($basePath, '/public')) {
+        $basePath = substr($basePath, 0, -7);
+    }
+
+    if ($basePath !== '' && str_starts_with($path, $basePath)) {
+        $path = substr($path, strlen($basePath));
+    }
+
+    if ($path === '' || $path === false) {
+        return '/';
+    }
+
+    $path = '/' . ltrim($path, '/');
+
+    // Treat front-controller URLs as root path for direct index.php access.
+    if ($path === '/index.php') {
+        return '/';
+    }
+    if (str_starts_with($path, '/index.php/')) {
+        $trimmed = substr($path, strlen('/index.php'));
+        return $trimmed === '' ? '/' : $trimmed;
+    }
+
+    return $path;
 }
 
 function request_input(string $key, mixed $default = null): mixed
@@ -133,6 +185,32 @@ function normalize_phone(string $phone): string
 
 function format_money(float $amount, ?string $currency = null): string
 {
-    $currency = $currency ?: 'USD';
-    return $currency . ' ' . number_format($amount, 2);
+    $currencyCode = strtoupper(trim((string) ($currency ?: 'EGP')));
+    return $currencyCode . ' ' . number_format($amount, 2);
+}
+
+function format_datetime(?string $datetime, string $format = 'd M Y, h:i A'): string
+{
+    if ($datetime === null || trim($datetime) === '') {
+        return '-';
+    }
+
+    try {
+        return (new \DateTimeImmutable($datetime))->format($format);
+    } catch (\Throwable $exception) {
+        return $datetime;
+    }
+}
+
+function datetime_to_iso(?string $datetime): string
+{
+    if ($datetime === null || trim($datetime) === '') {
+        return '';
+    }
+
+    try {
+        return (new \DateTimeImmutable($datetime))->format(\DateTimeInterface::ATOM);
+    } catch (\Throwable $exception) {
+        return '';
+    }
 }

@@ -53,6 +53,25 @@ final class Setting extends BaseModel
 
     public static function currency(): string
     {
-        return (string) self::get('currency', 'USD');
+        $currency = strtoupper(trim((string) self::get('currency', 'EGP')));
+        if ($currency === '' || $currency === 'USD') {
+            return 'EGP';
+        }
+
+        return $currency;
+    }
+
+    public static function timezone(): string
+    {
+        $timezone = trim((string) self::get('timezone', 'Africa/Cairo'));
+        if ($timezone === '' || strtoupper($timezone) === 'UTC') {
+            return 'Africa/Cairo';
+        }
+
+        if (!in_array($timezone, timezone_identifiers_list(), true)) {
+            return 'Africa/Cairo';
+        }
+
+        return $timezone;
     }
 }

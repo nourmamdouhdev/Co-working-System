@@ -23,7 +23,7 @@
                         <td>#<?= e((string) $visit['id']) ?></td>
                         <td><?= e((string) $visit['full_name']) ?></td>
                         <td><?= e((string) $visit['phone']) ?></td>
-                        <td><?= e((string) $visit['check_in_at']) ?></td>
+                        <td><?= e(format_datetime((string) $visit['check_in_at'])) ?></td>
                         <td><?= e((string) $elapsed) ?></td>
                         <td><?= e(format_money((float) $visit['hourly_rate_snapshot'], $currency)) ?>/hour</td>
                     </tr>

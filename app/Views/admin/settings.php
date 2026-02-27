@@ -8,10 +8,14 @@
         <input id="hourly_rate" name="hourly_rate" type="number" min="0.01" step="0.01" required value="<?= e((string) $settings['hourly_rate']) ?>">
 
         <label for="currency">Currency</label>
-        <input id="currency" name="currency" maxlength="10" required value="<?= e((string) $settings['currency']) ?>">
+        <select id="currency" name="currency" required>
+            <option value="EGP" selected>EGP (Egyptian Pound)</option>
+        </select>
 
         <label for="timezone">Timezone</label>
-        <input id="timezone" name="timezone" required value="<?= e((string) $settings['timezone']) ?>" placeholder="e.g. America/New_York">
+        <select id="timezone" name="timezone" required>
+            <option value="Africa/Cairo" selected>Africa/Cairo (Egypt)</option>
+        </select>
 
         <button type="submit">Save Settings</button>
     </form>

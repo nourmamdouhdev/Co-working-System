@@ -1,8 +1,8 @@
 <section class="card receipt">
     <h1>Receipt #<?= e((string) $receipt['payment_id']) ?></h1>
-    <p><strong>Paid At:</strong> <?= e((string) $receipt['paid_at']) ?></p>
+    <p><strong>Paid At:</strong> <?= e(format_datetime((string) $receipt['paid_at'])) ?></p>
     <p><strong>Client:</strong> <?= e((string) $receipt['full_name']) ?> (<?= e((string) $receipt['phone']) ?>)</p>
-    <p><strong>Visit:</strong> #<?= e((string) $receipt['visit_id']) ?> | <?= e((string) $receipt['check_in_at']) ?> to <?= e((string) $receipt['check_out_at']) ?></p>
+    <p><strong>Visit:</strong> #<?= e((string) $receipt['visit_id']) ?> | <?= e(format_datetime((string) $receipt['check_in_at'])) ?> to <?= e(format_datetime((string) $receipt['check_out_at'])) ?></p>
 
     <h2>Time Charges</h2>
     <ul>

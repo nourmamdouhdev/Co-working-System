@@ -10,7 +10,6 @@ use App\Controllers\ReceiptController;
 use App\Controllers\StaffController;
 use App\Core\Auth;
 use App\Core\Router;
-
 $router = new Router();
 
 $router->get('/', static function (array $params = []): void {

@@ -33,6 +33,7 @@ final class Database
                 PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
                 PDO::ATTR_EMULATE_PREPARES => false,
             ]);
+            self::syncSessionTimezone();
         } catch (PDOException $exception) {
             http_response_code(500);
             echo 'Database connection failed.';
@@ -43,6 +44,21 @@ final class Database
         }
 
         return self::$pdo;
+    }
+
+    public static function syncSessionTimezone(): void
+    {
+        if (self::$pdo === null) {
+            return;
+        }
+
+        $offset = date('P');
+        if (!preg_match('/^[+-]\d{2}:\d{2}$/', $offset)) {
+            return;
+        }
+
+        $stmt = self::$pdo->prepare('SET time_zone = :offset');
+        $stmt->execute(['offset' => $offset]);
     }
 
     public static function transaction(callable $callback): mixed

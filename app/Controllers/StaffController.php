@@ -153,7 +153,7 @@ final class StaffController
 
         if (!in_array($paymentMethod, ['cash', 'visa'], true)) {
             flash('error', 'Payment method must be cash or visa.');
-            redirect('/checkout/search?visit_id=' . $visitId);
+            redirect('/checkout?visit_id=' . $visitId);
         }
 
         $quantities = [];
@@ -235,7 +235,7 @@ final class StaffController
             redirect('/receipt/' . $paymentId);
         } catch (Throwable $exception) {
             flash('error', $exception->getMessage());
-            redirect('/checkout/search?visit_id=' . $visitId);
+            redirect('/checkout?visit_id=' . $visitId);
         }
     }
 }

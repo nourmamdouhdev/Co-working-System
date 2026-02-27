@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controllers;
 
 use App\Core\Auth;
+use App\Core\Database;
 use App\Models\AuditLog;
 use App\Models\Product;
 use App\Models\Setting;
@@ -121,8 +122,8 @@ final class AdminController
 
         if (request_method() === 'POST') {
             $hourlyRate = (float) request_input('hourly_rate', 0);
-            $currency = strtoupper(trim((string) request_input('currency', 'USD')));
-            $timezone = trim((string) request_input('timezone', 'UTC'));
+            $currency = strtoupper(trim((string) request_input('currency', 'EGP')));
+            $timezone = trim((string) request_input('timezone', 'Africa/Cairo'));
 
             try {
                 if ($hourlyRate <= 0) {
@@ -150,6 +151,7 @@ final class AdminController
                 ]);
 
                 date_default_timezone_set($timezone);
+                Database::syncSessionTimezone();
                 flash('success', 'Settings updated.');
             } catch (Throwable $exception) {
                 flash('error', $exception->getMessage());
@@ -164,8 +166,8 @@ final class AdminController
             'title' => 'System Settings',
             'settings' => [
                 'hourly_rate' => $settings['hourly_rate'] ?? '10.00',
-                'currency' => $settings['currency'] ?? 'USD',
-                'timezone' => $settings['timezone'] ?? date_default_timezone_get(),
+                'currency' => Setting::currency(),
+                'timezone' => Setting::timezone(),
             ],
         ]);
     }

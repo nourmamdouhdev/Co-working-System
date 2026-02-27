@@ -60,8 +60,8 @@
                         <td>#<?= e((string) $visit['id']) ?></td>
                         <td><?= e((string) $visit['full_name']) ?></td>
                         <td><?= e((string) $visit['phone']) ?></td>
-                        <td><?= e((string) $visit['check_in_at']) ?></td>
-                        <td><?= e((string) $visit['check_out_at']) ?></td>
+                        <td><?= e(format_datetime((string) $visit['check_in_at'])) ?></td>
+                        <td><?= e(format_datetime((string) $visit['check_out_at'])) ?></td>
                         <td><?= e((string) $visit['billable_hours']) ?></td>
                         <td><?= e(format_money((float) $visit['grand_total'], $currency)) ?></td>
                         <td><?= e((string) ($visit['payment_method'] ?? '-')) ?></td>
